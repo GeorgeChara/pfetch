@@ -939,6 +939,19 @@ get_memory() {
     log memory "${mem_used:-?}M / ${mem_full:-?}M" >&6
 }
 
+get_rollout() {
+    # lan-rig: the rollout this seat last got (written by the Ansible seat role)
+    [ -r /etc/lan-rig/rollout ] || return
+    log rollout "$(cat /etc/lan-rig/rollout)" >&6
+}
+
+get_games() {
+    # lan-rig: short build ids of the games on this seat
+    c=$HOME/build/cod4gles/kisakcod; [ -d "$c" ] || c=$HOME/build/kisakcod
+    n=$(ls "$HOME/LAN Library/nzp" 2>/dev/null | grep -E '^[0-9]{8}$' | tail -1)
+    log games "d2d $(git -C "$HOME/build/d2decomped" rev-parse --short HEAD 2>/dev/null) · cod4 $(git -C "$c" rev-parse --short HEAD 2>/dev/null) · nzp ${n:-none}" >&6
+}
+
 get_wm() {
     case $os in
         (Darwin*)
